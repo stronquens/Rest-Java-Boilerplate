@@ -5,7 +5,8 @@
  */
 package com.stronquens.control;
 
-import com.stronquens.beans.Profesor;
+import com.stronquens.beans.ProfesorBean;
+import com.stronquens.service.ProfesorService;
 import com.stronquens.util.HibernateUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,11 +15,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 
 /**
  *
@@ -43,27 +39,29 @@ public class Json extends HttpServlet {
             String ob = request.getParameter("ob");
             String op = request.getParameter("op");
 
+            HibernateUtil.createSessionFactory();
+
             if (ob.equalsIgnoreCase("profesor")) {
                 if (op.equalsIgnoreCase("get")) {
                     try {
-
-                        // Creamos SessionFactory
-                        /*Configuration configuration = new Configuration().configure();
-                        StandardServiceRegistryBuilder builder = new StandardServiceRegistryBuilder().
-                                applySettings(configuration.getProperties());
-
-                        SessionFactory sessionFactory = configuration.buildSessionFactory(builder.build());*/
-                        HibernateUtil.createSessionFactory();
-                        // Transaccion 
-                        Session session = HibernateUtil.getSessionFactory().openSession();
-                        session.beginTransaction();
-
-                        Profesor profesor = (Profesor) session.get(Profesor.class, 1);
-
-                        session.getTransaction().commit();
-                        session.close();
-                        //
-                        out.println(profesor.getNombre());
+                        int id = Integer.parseInt(request.getParameter("id"));
+                        ProfesorService oService = new ProfesorService();
+                        ProfesorBean profe = oService.get(id);
+                        out.println(profe.getNombre());
+                    } catch (Exception e) {
+                        out.println(e);
+                    }
+                }
+                if (op.equalsIgnoreCase("save")) {
+                    try {
+                        String nombre = request.getParameter("nombre");
+                        String ape1 = request.getParameter("ape1");
+                        String ape2 = request.getParameter("ape2");
+                        
+                        ProfesorService oService = new ProfesorService();
+                        ProfesorBean oBean = new ProfesorBean(0,nombre,ape1,ape2);
+                        ProfesorBean profe = oService.save(oBean);
+                        out.println(profe.getId());
                     } catch (Exception e) {
                         out.println(e);
                     }
