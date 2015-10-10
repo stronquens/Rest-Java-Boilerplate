@@ -60,7 +60,7 @@ public class Json extends HttpServlet {
                         
                         ProfesorService oService = new ProfesorService();
                         ProfesorBean oBean = new ProfesorBean(0,nombre,ape1,ape2);
-                        ProfesorBean profe = oService.save(oBean);
+                        ProfesorBean profe = oService.saveOrUpdate(oBean);
                         out.println(profe.getId());
                     } catch (Exception e) {
                         out.println(e);
