@@ -7,21 +7,26 @@ package com.stronquens.service;
 
 import com.stronquens.beans.ProfesorBean;
 import com.stronquens.util.HibernateUtil;
+import java.util.List;
+import org.hibernate.Query;
 import org.hibernate.Session;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author stronquens
  */
+@Service("profesorService")
 public class ProfesorService {
 
     public ProfesorService() {
     }
-    
+
     /**
      * Metodo que devuelve un profesor
+     *
      * @param id
-     * @return 
+     * @return
      */
     public ProfesorBean get(int id) {
         // Transaccion 
@@ -34,16 +39,19 @@ public class ProfesorService {
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
-            session.getTransaction().rollback();
-            session.close();
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+                session.close();
+            }
         }
         return profesor;
     }
 
     /**
      * Metodo que crea o actualiza un profesor
+     *
      * @param bean
-     * @return 
+     * @return
      */
     public ProfesorBean saveOrUpdate(ProfesorBean bean) {
         Session session = HibernateUtil.getSessionFactory().openSession();
@@ -54,18 +62,20 @@ public class ProfesorService {
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
-            session.getTransaction().rollback();
-            session.close();
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+                session.close();
+            }
         }
         return bean;
     }
 
     /**
      * Metodo que borra un profesor
+     *
      * @param bean
-     * @return 
      */
-    public ProfesorBean delete(ProfesorBean bean) {
+    public void delete(ProfesorBean bean) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         try {
@@ -74,9 +84,33 @@ public class ProfesorService {
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
-            session.getTransaction().rollback();
-            session.close();
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+                session.close();
+            }
         }
-        return bean;
+    }
+
+    /**
+     * Devuelve todos los campos de una tabla
+     *
+     * @return
+     */
+    public List<ProfesorBean> findAll() {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        List<ProfesorBean> entities = null;
+        try {
+            Query query = session.createQuery("SELECT * FROM profesor");
+            entities = query.list();
+            session.getTransaction().commit();
+
+        } catch (Exception e) {
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+                session.close();
+            }
+        }
+        return entities;
     }
 }
