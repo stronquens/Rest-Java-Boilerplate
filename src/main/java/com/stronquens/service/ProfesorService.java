@@ -53,7 +53,7 @@ public class ProfesorService {
      * @param bean
      * @return
      */
-    public ProfesorBean saveOrUpdate(ProfesorBean bean) {
+    public void saveOrUpdate(ProfesorBean bean) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         try {
@@ -67,7 +67,6 @@ public class ProfesorService {
                 session.close();
             }
         }
-        return bean;
     }
 
     /**
@@ -101,8 +100,7 @@ public class ProfesorService {
         session.beginTransaction();
         List<ProfesorBean> entities = null;
         try {
-            Query query = session.createQuery("SELECT * FROM profesor");
-            entities = query.list();
+            entities = session.createQuery( "from ProfesorBean" ).list();
             session.getTransaction().commit();
 
         } catch (Exception e) {

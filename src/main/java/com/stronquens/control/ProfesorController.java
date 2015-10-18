@@ -28,40 +28,33 @@ public class ProfesorController {
     @Autowired
     private ProfesorService profesorService;
 
-    @RequestMapping("profesorlist.json")
-    public @ResponseBody
-    List<ProfesorBean> getProfesorList() {
-        HibernateUtil.createSessionFactory();
-        return profesorService.findAll();
-    }
-
-    @RequestMapping(value = "/getProfesor/{id}")
+    @RequestMapping(value = "/get/{id}")
     public @ResponseBody
     ProfesorBean getProfesor(@PathVariable("id") int id) {
         HibernateUtil.createSessionFactory();
         return profesorService.get(id);
     }
 
-    @RequestMapping(value = "/addProfesor", method = RequestMethod.POST)
+    @RequestMapping(value = "/saveorupdate", method = RequestMethod.POST, headers = {"content-type=application/json"})
     public @ResponseBody
     void addProfesor(@RequestBody ProfesorBean oBean) {
         HibernateUtil.createSessionFactory();
         profesorService.saveOrUpdate(oBean);
     }
 
-    @RequestMapping(value = "/updateProfesor", method = RequestMethod.PUT)
-    public @ResponseBody
-    void updateProfesor(@RequestBody ProfesorBean oBean) {
-        HibernateUtil.createSessionFactory();
-        profesorService.saveOrUpdate(oBean);
-    }
-
-    @RequestMapping(value = "/removeProfesor/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/remove/{id}", method = RequestMethod.DELETE)
     public @ResponseBody
     void removeProfesor(@PathVariable("id") int id) {
         HibernateUtil.createSessionFactory();
         ProfesorBean oProfesor = new ProfesorBean(id, null, null, null);
         profesorService.delete(oProfesor);
+    }
+
+    @RequestMapping("list.json")
+    public @ResponseBody
+    List<ProfesorBean> getProfesorList() {
+        HibernateUtil.createSessionFactory();
+        return profesorService.findAll();
     }
 
 }
