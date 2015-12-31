@@ -57,6 +57,13 @@ public class ProfesorController {
         return profesorService.findAll();
     }
     
+    
+    /**
+     * 
+     * @param tamanyoPagina
+     * @param paginAMostrar empieza desde la pagina 0
+     * @return 
+     */
     @RequestMapping(value = "/page/{tamanyoPagina}/{paginAMostrar}")
     public @ResponseBody
     List<ProfesorBean> getProfesorPage(

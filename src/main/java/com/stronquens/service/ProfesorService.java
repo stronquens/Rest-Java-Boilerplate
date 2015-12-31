@@ -102,7 +102,7 @@ public class ProfesorService {
         try {
             entities = session.createQuery("from ProfesorBean").list();
             session.getTransaction().commit();
-
+            session.close();
         } catch (Exception e) {
             if (session.getTransaction().isActive()) {
                 session.getTransaction().rollback();
@@ -121,12 +121,12 @@ public class ProfesorService {
         session.beginTransaction();
         List<ProfesorBean> entities = null;
         try {
-            Query query = session.createQuery("SELECT p FROM Profesor p Order By p.id");
+            Query query = session.createQuery("SELECT p FROM ProfesorBean p Order By p.id");
             query.setMaxResults(tamanyoPagina);
             query.setFirstResult(paginaAMostrar * tamanyoPagina);
             entities = query.list();
             session.getTransaction().commit();
-
+            session.close();
         } catch (Exception e) {
             if (session.getTransaction().isActive()) {
                 session.getTransaction().rollback();
