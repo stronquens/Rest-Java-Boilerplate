@@ -100,7 +100,31 @@ public class ProfesorService {
         session.beginTransaction();
         List<ProfesorBean> entities = null;
         try {
-            entities = session.createQuery( "from ProfesorBean" ).list();
+            entities = session.createQuery("from ProfesorBean").list();
+            session.getTransaction().commit();
+
+        } catch (Exception e) {
+            if (session.getTransaction().isActive()) {
+                session.getTransaction().rollback();
+                session.close();
+            }
+        }
+        return entities;
+    }
+
+    /**
+     * Devuelve los campos paginados
+     * @return
+     */
+    public List<ProfesorBean> getPages(int tamanyoPagina, int paginaAMostrar) {
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.beginTransaction();
+        List<ProfesorBean> entities = null;
+        try {
+            Query query = session.createQuery("SELECT p FROM Profesor p Order By p.id");
+            query.setMaxResults(tamanyoPagina);
+            query.setFirstResult(paginaAMostrar * tamanyoPagina);
+            entities = query.list();
             session.getTransaction().commit();
 
         } catch (Exception e) {

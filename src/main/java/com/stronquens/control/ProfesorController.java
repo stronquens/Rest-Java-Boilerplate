@@ -56,5 +56,14 @@ public class ProfesorController {
         HibernateUtil.createSessionFactory();
         return profesorService.findAll();
     }
+    
+    @RequestMapping(value = "/page/{tamanyoPagina}/{paginAMostrar}")
+    public @ResponseBody
+    List<ProfesorBean> getProfesorPage(
+            @PathVariable("tamanyoPagina") int tamanyoPagina, 
+            @PathVariable("paginAMostrar") int paginAMostrar) {
+        HibernateUtil.createSessionFactory();
+        return profesorService.getPages(tamanyoPagina, paginAMostrar);
+    }
 
 }
