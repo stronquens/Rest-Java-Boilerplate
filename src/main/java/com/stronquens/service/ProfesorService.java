@@ -7,6 +7,7 @@ package com.stronquens.service;
 
 import com.stronquens.beans.ProfesorBean;
 import com.stronquens.util.HibernateUtil;
+import java.util.HashMap;
 import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -28,14 +29,15 @@ public class ProfesorService {
      * @param id
      * @return
      */
-    public ProfesorBean get(int id) {
-        // Transaccion 
+    public HashMap<String, Object> get(int id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        ProfesorBean profesor = new ProfesorBean();
+        HashMap<String, Object> result = new HashMap<String, Object>();
         try {
-            profesor = (ProfesorBean) session.get(ProfesorBean.class, id);
-
+            result.put("Data", (ProfesorBean) session.get(ProfesorBean.class, id));
+            result.put("Status", 200);
+            result.put("Message", "succes");
+            
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -43,8 +45,10 @@ public class ProfesorService {
                 session.getTransaction().rollback();
                 session.close();
             }
+            result.put("Status", 500);
+            result.put("Message", this.getClass().getName() + ":set ERROR: " + e.getMessage());
         }
-        return profesor;
+        return result;
     }
 
     /**
@@ -53,7 +57,7 @@ public class ProfesorService {
      * @param bean
      * @return
      */
-    public void saveOrUpdate(ProfesorBean bean) {
+    public void saveOrUpdate(ProfesorBean bean) throws Exception {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         try {
@@ -66,6 +70,7 @@ public class ProfesorService {
                 session.getTransaction().rollback();
                 session.close();
             }
+            throw new Exception(this.getClass().getName() + ":set ERROR: " + e.getMessage());
         }
     }
 
@@ -74,7 +79,7 @@ public class ProfesorService {
      *
      * @param bean
      */
-    public void delete(ProfesorBean bean) {
+    public void delete(ProfesorBean bean) throws Exception {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
         try {
@@ -87,6 +92,7 @@ public class ProfesorService {
                 session.getTransaction().rollback();
                 session.close();
             }
+            throw new Exception(this.getClass().getName() + ":set ERROR: " + e.getMessage());
         }
     }
 
@@ -95,12 +101,15 @@ public class ProfesorService {
      *
      * @return
      */
-    public List<ProfesorBean> findAll() {
+    public HashMap<String, Object> findAll() {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        List<ProfesorBean> entities = null;
+        HashMap<String, Object> result = new HashMap<String, Object>();
         try {
-            entities = session.createQuery("from ProfesorBean").list();
+            result.put("Data", session.createQuery("from ProfesorBean").list());
+            result.put("Status", 200);
+            result.put("Message", "succes");
+            
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -108,23 +117,32 @@ public class ProfesorService {
                 session.getTransaction().rollback();
                 session.close();
             }
+            result.put("Satutus", 500);
+            result.put("Message", this.getClass().getName() + ":set ERROR: " + e.getMessage());
         }
-        return entities;
+        return result;
     }
 
     /**
      * Devuelve los campos paginados
+     *
+     * @param tamanyoPagina
+     * @param paginaAMostrar
      * @return
      */
-    public List<ProfesorBean> getPages(int tamanyoPagina, int paginaAMostrar) {
+    public HashMap<String, Object> getPages(int tamanyoPagina, int paginaAMostrar) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
-        List<ProfesorBean> entities = null;
+        HashMap<String, Object> result = new HashMap<String, Object>();
         try {
             Query query = session.createQuery("SELECT p FROM ProfesorBean p Order By p.id");
             query.setMaxResults(tamanyoPagina);
             query.setFirstResult(paginaAMostrar * tamanyoPagina);
-            entities = query.list();
+
+            result.put("Data", query.list());
+            result.put("Status", 200);
+            result.put("Message", "succes");
+
             session.getTransaction().commit();
             session.close();
         } catch (Exception e) {
@@ -132,7 +150,9 @@ public class ProfesorService {
                 session.getTransaction().rollback();
                 session.close();
             }
+            result.put("Satutus", 500);
+            result.put("Message", this.getClass().getName() + ":set ERROR: " + e.getMessage());
         }
-        return entities;
+        return result;
     }
 }

@@ -8,6 +8,7 @@ package com.stronquens.control;
 import com.stronquens.beans.ProfesorBean;
 import com.stronquens.service.ProfesorService;
 import com.stronquens.util.HibernateUtil;
+import java.util.HashMap;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -30,21 +31,21 @@ public class ProfesorController {
 
     @RequestMapping(value = "/get/{id}")
     public @ResponseBody
-    ProfesorBean getProfesor(@PathVariable("id") int id) {
+    HashMap<String, Object> getProfesor(@PathVariable("id") int id) {
         HibernateUtil.createSessionFactory();
         return profesorService.get(id);
     }
 
     @RequestMapping(value = "/saveorupdate", method = RequestMethod.POST, headers = {"content-type=application/json"})
     public @ResponseBody
-    void addProfesor(@RequestBody ProfesorBean oBean) {
+    void addProfesor(@RequestBody ProfesorBean oBean) throws Exception {
         HibernateUtil.createSessionFactory();
         profesorService.saveOrUpdate(oBean);
     }
 
     @RequestMapping(value = "/remove/{id}", method = RequestMethod.DELETE)
     public @ResponseBody
-    void removeProfesor(@PathVariable("id") int id) {
+    void removeProfesor(@PathVariable("id") int id) throws Exception {
         HibernateUtil.createSessionFactory();
         ProfesorBean oProfesor = new ProfesorBean(id, null, null, null);
         profesorService.delete(oProfesor);
@@ -52,11 +53,10 @@ public class ProfesorController {
 
     @RequestMapping("list.json")
     public @ResponseBody
-    List<ProfesorBean> getProfesorList() {
+    HashMap<String, Object> getProfesorList() {
         HibernateUtil.createSessionFactory();
         return profesorService.findAll();
     }
-    
     
     /**
      * 
@@ -66,7 +66,7 @@ public class ProfesorController {
      */
     @RequestMapping(value = "/page/{tamanyoPagina}/{paginAMostrar}")
     public @ResponseBody
-    List<ProfesorBean> getProfesorPage(
+    HashMap<String, Object> getProfesorPage(
             @PathVariable("tamanyoPagina") int tamanyoPagina, 
             @PathVariable("paginAMostrar") int paginAMostrar) {
         HibernateUtil.createSessionFactory();
