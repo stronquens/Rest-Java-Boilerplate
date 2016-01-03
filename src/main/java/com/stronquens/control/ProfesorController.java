@@ -9,7 +9,6 @@ import com.stronquens.beans.ProfesorBean;
 import com.stronquens.service.ProfesorService;
 import com.stronquens.util.HibernateUtil;
 import java.util.HashMap;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,46 +30,54 @@ public class ProfesorController {
 
     @RequestMapping(value = "/get/{id}")
     public @ResponseBody
-    HashMap<String, Object> getProfesor(@PathVariable("id") int id) {
+    HashMap<String, Object> get(@PathVariable("id") int id) {
         HibernateUtil.createSessionFactory();
         return profesorService.get(id);
     }
 
     @RequestMapping(value = "/saveorupdate", method = RequestMethod.POST, headers = {"content-type=application/json"})
     public @ResponseBody
-    void addProfesor(@RequestBody ProfesorBean oBean) throws Exception {
+    HashMap<String, Object> saveOrUpdate(@RequestBody ProfesorBean oBean) {
         HibernateUtil.createSessionFactory();
-        profesorService.saveOrUpdate(oBean);
+        return profesorService.saveOrUpdate(oBean);
     }
 
     @RequestMapping(value = "/remove/{id}", method = RequestMethod.DELETE)
     public @ResponseBody
-    void removeProfesor(@PathVariable("id") int id) throws Exception {
+    HashMap<String, Object> remove(@PathVariable("id") int id) {
         HibernateUtil.createSessionFactory();
         ProfesorBean oProfesor = new ProfesorBean(id, null, null, null);
-        profesorService.delete(oProfesor);
+        return profesorService.delete(oProfesor);
     }
 
-    @RequestMapping("list.json")
+    @RequestMapping("all")
     public @ResponseBody
-    HashMap<String, Object> getProfesorList() {
+    HashMap<String, Object> getALL() {
         HibernateUtil.createSessionFactory();
         return profesorService.findAll();
     }
-    
+
     /**
-     * 
+     *
      * @param tamanyoPagina
      * @param paginAMostrar empieza desde la pagina 0
-     * @return 
+     * @return
      */
     @RequestMapping(value = "/page/{tamanyoPagina}/{paginAMostrar}")
     public @ResponseBody
-    HashMap<String, Object> getProfesorPage(
-            @PathVariable("tamanyoPagina") int tamanyoPagina, 
+    HashMap<String, Object> getPage(
+            @PathVariable("tamanyoPagina") int tamanyoPagina,
             @PathVariable("paginAMostrar") int paginAMostrar) {
         HibernateUtil.createSessionFactory();
-        return profesorService.getPages(tamanyoPagina, paginAMostrar);
+        return profesorService.getPage(tamanyoPagina, paginAMostrar);
+    }
+    
+        @RequestMapping(value = "/pages/{tamanyoPagina}")
+    public @ResponseBody
+    HashMap<String, Object> getPages(
+            @PathVariable("tamanyoPagina") int tamanyoPagina) {
+        HibernateUtil.createSessionFactory();
+        return profesorService.getPages(tamanyoPagina);
     }
 
 }
